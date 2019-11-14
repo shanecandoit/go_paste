@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple Paste Bin</title>
+<style type="text/css">body{margin:40px
+auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0
+10px}h1,h2,h3{line-height:1.2}</style>
+</head>
+<body>
+    <h1>Simple Paste Bin</h1>
+    <p>For saving text on the internet and sharing it later</p>
+    <p>Viewing: {{.Hash}}</p>
+
+    <h2>Title:
+        {{.Title}}
+    </h2>
+    <small>A Title can be helpful but is not required</small><br>
+
+    <textarea rows="40" cols="50" name="text">{{.Body}}</textarea><br>
+
+    <a href="/">back home</a>
+</body>
+</html>
