@@ -25,7 +25,7 @@ type Page struct {
 }
 
 // TitleToHash has all titles and their Hash values
-var TitleToHash map[string]string = make(map[string]string)
+//var TitleToHash map[string]string = make(map[string]string)
 
 func bytesToBase64Url(userText []byte) string {
 	sum := sha256.Sum256(userText)
@@ -78,7 +78,7 @@ func (p *Page) save() error {
 	fmt.Println("save", p.Title, p.Hash)
 
 	// read from disk ?
-	TitleToHash[p.Title] = p.Hash
+	//TitleToHash[p.Title] = p.Hash
 
 	start := time.Now().String()
 	start = strings.ReplaceAll(start, " ", "-")
@@ -103,7 +103,8 @@ func loadPage(title string) (*Page, error) {
 	title = cleanFileName(title)
 
 	// is it in map?
-	v := TitleToHash[title]
+	//v := TitleToHash[title]
+	v := ""
 	if v != "" {
 		fmt.Println("load", title, v)
 
@@ -116,7 +117,7 @@ func loadPage(title string) (*Page, error) {
 		hash := bytesToBase64Url(body)
 
 		// it was not so put it there
-		TitleToHash[title] = hash
+		//TitleToHash[title] = hash
 
 		return &Page{Title: title, Hash: hash, Body: body}, nil
 	}
@@ -178,8 +179,12 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	formDetails.save()
 
+	// go view that page
+	http.Redirect(w, r, "/view/"+r.FormValue("title"), http.StatusFound)
+
 	//fmt.Fprintf(w, homePage)
-	tmpl.Execute(w, formDetails)
+	//formCont := PageAndMap{page: &formDetails, TitlesToHashes: &TitleToHash}
+	//tmpl.Execute(w, formDetails)
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
