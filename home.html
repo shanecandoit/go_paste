@@ -19,12 +19,8 @@ auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0
         <input value="submit" type="submit"/>
     </form>
     
-    <h5>Some recent pastes</h5>
-    <ul>
-        {{ range $key, $value := TitleToHash }}
-            <li>{{ $key }} : {{ $value }}</li>
-        {{ end }}
-    </ul>
+    <h5>Sample page</h5>
+    <p><a href="/view/TestPage">TestPage</a></p>
 
 </body>
 </html>

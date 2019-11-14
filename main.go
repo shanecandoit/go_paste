@@ -113,7 +113,12 @@ func loadPage(title string) (*Page, error) {
 			fmt.Println("Page:loadPage", title, "ERR", err)
 			return nil, err
 		}
-		return &Page{Title: title, Body: body}, nil
+		hash := bytesToBase64Url(body)
+
+		// it was not so put it there
+		TitleToHash[title] = hash
+
+		return &Page{Title: title, Hash: hash, Body: body}, nil
 	}
 
 	// not in map
@@ -138,7 +143,10 @@ func loadPage(title string) (*Page, error) {
 		fmt.Println("Page:loadPage", title, "ERR", err)
 		return nil, err
 	}
-	return &Page{Title: title, Body: body}, nil
+
+	hash := bytesToBase64Url(body)
+
+	return &Page{Title: title, Hash: hash, Body: body}, nil
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
@@ -179,7 +187,9 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 
 	title := r.URL.Path[len("/view/"):]
 	p, _ := loadPage(title)
-	//fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", p.Title, p.Body)
+	fmt.Println("view loaded, title", p.Title)
+	fmt.Println("view loaded, hash ", p.Hash)
+	fmt.Println("view loaded, body ", len(p.Body))
 
 	tmpl := template.Must(template.ParseFiles("view.html"))
 	tmpl.Execute(w, p)

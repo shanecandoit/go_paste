@@ -16,7 +16,7 @@ auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0
     </h2>
     <small>A Title can be helpful but is not required</small><br>
 
-    <textarea rows="40" cols="50" name="text">{{.Body}}</textarea><br>
+    <textarea rows="40" cols="50" name="text">{{ printf "%s" .Body }}</textarea><br>
 
     <a href="/">back home</a>
 </body>
