@@ -14,9 +14,9 @@ auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0
     <h2>Title:
         {{.Title}}
     </h2>
-    <small>A Title can be helpful but is not required</small><br>
+    <small>FYI: People that know your title can overwrite your document</small><br>
 
-    <textarea rows="40" cols="50" name="text">{{ printf "%s" .Body }}</textarea><br>
+    <textarea readonly="readonly" rows="40" cols="50" name="text">{{ printf "%s" .Body }}</textarea><br>
 
     <a href="/">back home</a>
 </body>

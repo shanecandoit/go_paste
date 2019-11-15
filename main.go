@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
+	"html"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -65,6 +66,7 @@ func (p *Page) save() error {
 		fmt.Println("big file being truncated", p.Title)
 		p.Body = p.Body[:twoMb]
 	}
+	p.Body = []byte(html.EscapeString(string(p.Body)))
 
 	// get hash if not set
 	if p.Hash == "" && p.Body != nil {
@@ -73,6 +75,8 @@ func (p *Page) save() error {
 
 	// clean title, removes //..// but what about #?$
 	//p.Title = filepath.Clean(p.Title)
+	//p.Title = html.EscapeString(p.Title)
+	//p.Title = url.QueryEscape(p.Title)
 	p.Title = cleanFileName(p.Title)
 
 	fmt.Println("save", p.Title, p.Hash)
@@ -144,6 +148,7 @@ func loadPage(title string) (*Page, error) {
 		fmt.Println("Page:loadPage", title, "ERR", err)
 		return nil, err
 	}
+	body = []byte(html.UnescapeString(string(body)))
 
 	hash := bytesToBase64Url(body)
 
@@ -168,19 +173,24 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("POST")
 	userText := r.FormValue("text")
-	urlHash := bytesToBase64Url([]byte(r.FormValue("message")))
+	userText = strings.TrimSpace(userText)
+	//userText = html.EscapeString(userText)
+	urlHash := bytesToBase64Url([]byte(userText))
 
+	title := r.FormValue("title")
+	title = strings.TrimSpace(title)
+	title = strings.ReplaceAll(title, " ", "_")
+	title = cleanFileName(title)
+	//title = url.QueryEscape(title)
 	formDetails := Page{
-		Title: r.FormValue("title"),
-		//Subject: r.FormValue("subject"),
-		//Message: r.FormValue("message"),
-		Hash: urlHash,
-		Body: []byte(userText),
+		Title: title,
+		Hash:  urlHash,
+		Body:  []byte(userText),
 	}
 	formDetails.save()
 
 	// go view that page
-	http.Redirect(w, r, "/view/"+r.FormValue("title"), http.StatusFound)
+	http.Redirect(w, r, "/view/"+title, http.StatusFound)
 
 	//fmt.Fprintf(w, homePage)
 	//formCont := PageAndMap{page: &formDetails, TitlesToHashes: &TitleToHash}
